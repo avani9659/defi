@@ -22,7 +22,7 @@ contract Token is ERC20Interface {
         name = _tokenName;
         symbol = _tokenSymbol;
         decimals = _decimalUnits;
-        totalSupply = _initialAmount.mul(10 ** uint8(decimals)); //since ethereum does not allow decimals, we store the number without decimal and then display it by dividing by the decimalUnits
+        totalSupply = _initialAmount * (10 ** uint8(decimals)); //since ethereum does not allow decimals, we store the number without decimal and then display it by dividing by the decimalUnits
         tokenBalances[msg.sender] = totalSupply;
         owner = msg.sender;
     }
@@ -33,8 +33,8 @@ contract Token is ERC20Interface {
     ) public override returns (bool success) {
         require(tokenBalances[msg.sender] >= _value, "Insufficient balance");
 
-        tokenBalances[msg.sender] = tokenBalances[msg.sender].sub(_value);
-        tokenBalances[_to] = tokenBalances[_to].add(_value);
+        tokenBalances[msg.sender] = tokenBalances[msg.sender] - _value;
+        tokenBalances[_to] = tokenBalances[_to] + _value;
 
         emit Transfer(msg.sender, _to, _value);
 
@@ -52,11 +52,13 @@ contract Token is ERC20Interface {
         );
         require(tokenBalances[_from] >= _value, "Insufficient balance");
 
-        tokenBalances[_to] = tokenBalances[_to].add(_value);
-        tokenBalances[_from] = tokenBalances[_from].sub(_value);
-        allowed[_from][msg.sender] = allowed[_from][msg.sender].sub(_value);
+        tokenBalances[_to] = tokenBalances[_to] + _value;
+        tokenBalances[_from] = tokenBalances[_from] - _value;
+        allowed[_from][msg.sender] = allowed[_from][msg.sender] - _value;
 
         emit Transfer(_from, _to, _value);
+
+        return true;
     }
 
     //allow someone else to spend tokens on my behalf (give them approval)
