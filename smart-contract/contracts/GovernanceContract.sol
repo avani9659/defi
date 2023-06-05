@@ -32,6 +32,16 @@ contract Governance is Initializable {
         return true;
     }
 
+    // function enableFlag() external returns (bool success) {
+    //     currentFlags += 1;
+
+    //     if (currentFlags > flaggingThreshold) {
+    //         isPlatformEnabled = true;
+    //     }
+
+    //     return true;
+    // }
+
     function changePlatformState(
         bool newState
     ) external returns (bool success) {
